@@ -33,6 +33,14 @@ class ClientApp(App):
             self.start_service()
         Process(target=self.initiate_load_sequence).start()
 
+    @staticmethod
+    def start_service():
+        from jnius import autoclass
+        service = autoclass("org.mindset.codered.ServiceCodered")
+        mActivity = autoclass("org.kivy.android.PythonActivity").mActivity
+        service.start(mActivity, "")
+        return service
+
 
 class GUI(Widget):
     def __init__(self, **kwargs):
