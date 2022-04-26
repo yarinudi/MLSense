@@ -4,10 +4,11 @@ from kivy.app import App
 
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
-from plyer import notification, email, accelerometer
+from plyer import email, accelerometer
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
+from multiprocessing.dummy import Process
 
 import uuid
 # kivy.require('1.8.0')
@@ -22,13 +23,15 @@ Window.clearcolor = (0, 0, 0, 1.)
 class ClientApp(App):
 
     def build(self):
-        # this is where the root widget goes
-
-        # should be a canvas
-
         app = GUI()
 
         return app
+
+    def on_start(self):
+        from kivy import platform
+        if platform == "android":
+            self.start_service()
+        Process(target=self.initiate_load_sequence).start()
 
 
 class GUI(Widget):
@@ -73,15 +76,6 @@ class GUI(Widget):
         except:
             self.label.text = 'cant read accelerometer'
 
-
-    # def notify(self):
-    #     try:
-    #         notification.notify(title="Kivy Notification", message="Plyer Up and Running!",
-    #                             app_name="kivy_test", app_icon="resources/logo.png", timeout=10)
-    #     except:
-    #         print('error notifiying')
-    #
-    #
     # def email(self):
     #     try:
     #         email.send(recipient='yarin1997udi@gmail.com', subject='Thanks!', text='Enjoyed your lesson')
